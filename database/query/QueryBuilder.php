@@ -2,6 +2,7 @@
 
 namespace Database\Query;
 
+use Exception;
 use Database\Query\interfaces\IBuilder;
 
 class QueryBuilder
@@ -10,7 +11,10 @@ class QueryBuilder
         'select' => '',
         'table' => '',
         'limit' => '',
-        'join' => []
+        'join' => [],
+        'where' => [],
+        'binds' => [],
+        'orWhere' => [],
     ];
 
     public function select($fields = '*')
@@ -33,7 +37,50 @@ class QueryBuilder
 
     public function join($table, $foreignKey)
     {
-        $this->queries['join'][$foreignKey] = " inner join {$table} on {$table}.id = {$this->queries['table']}.{$foreignKey}";
+        // $this->queries['join'][] = " inner join {$table} on {$table}.id = {$this->queries['table']}.{$foreignKey}";
+        array_push($this->queries['join'], " inner join {$table} on {$table}.id = {$this->queries['table']}.{$foreignKey}");
+        return $this;
+    }
+
+    public function where(...$args)
+    {
+        $numArgs = count($args);
+
+        if ($numArgs <= 1 || $numArgs > 3) {
+            throw new Exception('O número de args tem quer no mínimo 2 e máximo 3');
+        }
+
+        $operator = '=';
+
+        ($numArgs == 2) ?
+        list($field, $value) = $args :
+        list($field, $operator, $value) = $args;
+
+        array_push($this->queries['binds'], $value);
+
+        $this->queries['where'][] = "{$field} {$operator} ?";
+
+        return $this;
+    }
+
+    public function orWhere(...$args)
+    {
+        $numArgs = count($args);
+
+        if ($numArgs <= 1 || $numArgs > 3) {
+            throw new Exception('O número de args tem quer no mínimo 2 e máximo 3');
+        }
+
+        $operator = '=';
+
+        ($numArgs == 2) ?
+        list($field, $value) = $args :
+        list($field, $operator, $value) = $args;
+
+        $this->queries['binds'][] = $value;
+
+        $this->queries['orWhere'][] = "{$field} {$operator} ?";
+
         return $this;
     }
 
