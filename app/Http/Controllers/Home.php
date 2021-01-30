@@ -16,10 +16,14 @@ class Home extends Controller
 
     public function index()
     {
-        $this->queryBuilder->select('books.id as bookId,title,description,pages,google_price,categories.name as categoryName')
+        $this->queryBuilder->select()
         ->table('books')
-        ->limit(100)
+        ->limit(10)
+        ->like('title', 'Terror')
+        ->like('description', 'Terror')
         ->execute(new Select);
+
+        // echo json_encode($selected['ahaa']);
 
         /// select * from books where id > :id or id < :id
     }

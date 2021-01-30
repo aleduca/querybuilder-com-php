@@ -84,6 +84,13 @@ class QueryBuilder
         return $this;
     }
 
+    public function like($field, $value)
+    {
+        $this->queries['like'][] = "{$field} like ?";
+        $this->queries['binds'][] = "%{$value}%";
+        return $this;
+    }
+
     public function execute(IBuilder $builder)
     {
         $execute = new Execute;
