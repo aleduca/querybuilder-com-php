@@ -16,12 +16,16 @@ class Home extends Controller
 
     public function index()
     {
-        $this->queryBuilder->select()
+        $data = $this->queryBuilder->select('id,title, description')
         ->table('books')
-        ->limit(10)
-        ->like('title', 'Terror')
-        ->like('description', 'Terror')
+        ->paginate()
+        ->order('title', 'asc')
         ->execute(new Select);
+
+        // echo json_encode($data);
+        // die();
+
+        return view('site.home', ['title' => 'Books', 'data' => $data]);
 
         // echo json_encode($selected['ahaa']);
 

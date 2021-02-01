@@ -26,7 +26,15 @@ class Execute
 
         if ($builder instanceof Select) {
             $fetch = $response['fetchAll'] ? $prepare->fetchAll() : $prepare->fetch();
-            echo json_encode($fetch);
+            $count = $connection->query('select FOUND_ROWS()')->fetchColumn();
+
+            if ($this->queries['paginate']) {
+                return [
+                    'rows' => $fetch,
+                    'count' => $count,
+                    'links' => RenderLinks::render($count, $this->queries['limit'])
+                ];
+            }
 
             return ['rows' => $fetch];
         }
