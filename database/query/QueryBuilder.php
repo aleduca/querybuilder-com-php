@@ -18,6 +18,9 @@ class QueryBuilder
         'offset' => 0,
         'like' => [],
         'order' => '',
+        'group' => '',
+        'create' => [],
+        'update' => [],
         'paginate' => false
     ];
 
@@ -112,6 +115,43 @@ class QueryBuilder
     public function order($field, $value)
     {
         $this->queries['order'] = "{$field} {$value}";
+        return $this;
+    }
+
+    public function group($field)
+    {
+        $this->queries['group'] = $field;
+        return $this;
+    }
+
+    public function create($field, $value = '')
+    {
+        // insert into users (name,last_name) values(?,?)
+        if (is_array($field)) {
+            foreach ($field as $key => $value) {
+                $this->queries['create'][$key] = '?';
+                $this->queries['binds'][] = $value;
+            }
+        } else {
+            $this->queries['create'][$field] = '?';
+            $this->queries['binds'][] = $value;
+        }
+
+        return $this;
+    }
+
+    public function update($field, $value = '')
+    {
+        if (is_array($field)) {
+            foreach ($field as $key => $value) {
+                $this->queries['update'][$key] = "{$key} = ?";
+                $this->queries['binds'][] = $value;
+            }
+        } else {
+            $this->queries['update'][$field] = "{$field} = ?";
+            $this->queries['binds'][] = $value;
+        }
+
         return $this;
     }
 

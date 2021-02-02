@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use Database\Query\Delete;
 use Database\Query\QueryBuilder;
 use Database\Query\Select;
 
@@ -16,16 +17,14 @@ class Home extends Controller
 
     public function index()
     {
-        $data = $this->queryBuilder->select('id,title, description')
-        ->table('books')
-        ->paginate()
-        ->order('title', 'asc')
-        ->execute(new Select);
+        $data = $this->queryBuilder->table('users')
+        ->where('id', 14)
+        ->execute(new Delete);
 
-        // echo json_encode($data);
-        // die();
+        echo json_encode($data);
+        die();
 
-        return view('site.home', ['title' => 'Books', 'data' => $data]);
+        // return view('site.home', ['title' => 'Books', 'data' => $data]);
 
         // echo json_encode($selected['ahaa']);
 
