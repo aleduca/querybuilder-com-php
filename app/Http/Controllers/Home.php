@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers;
 
-use Database\Query\Delete;
 use Database\Query\QueryBuilder;
 use Database\Query\Select;
 
@@ -17,9 +16,11 @@ class Home extends Controller
 
     public function index()
     {
-        $data = $this->queryBuilder->table('users')
-        ->where('id', 14)
-        ->execute(new Delete);
+        $data = $this->queryBuilder->select('categoryId,count(*) as total')
+        ->table('books')
+        ->paginate()
+        ->group('categoryId')
+        ->execute(new Select);
 
         echo json_encode($data);
         die();

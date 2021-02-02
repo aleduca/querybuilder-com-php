@@ -17,7 +17,7 @@ class RenderLinks
 
     public static function render($totalRegisters, $limit)
     {
-        $totalPages = floor($totalRegisters / $limit);
+        $totalPages = ceil($totalRegisters / $limit);
 
         $currentPage = $_GET['page'] ?? 1;
 
